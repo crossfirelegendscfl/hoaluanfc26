@@ -647,6 +647,87 @@ main { padding: 28px 32px 40px; }
   color: var(--text);
 }
 
+/* ---------- Final standings (RESULTS_LOCKED) ---------- */
+.group-card.final .standings-zone { margin-bottom: 0; }
+.group-card.final .rank-zone:last-child { margin-bottom: 0; }
+
+.results-locked .groups-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1100px) { .results-locked .groups-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .results-locked .groups-grid { grid-template-columns: minmax(0, 1fr); } }
+.results-locked .slot-list { min-width: 0; }
+.team-chip.locked .team-name { min-width: 0; line-height: 1.05; }
+@media (max-width: 640px) {
+  .team-chip.locked { gap: 10px; padding: 8px 10px; }
+  .team-chip.locked .team-logo { width: 44px; height: 44px; }
+  .team-chip.locked .team-name { font-size: 20px; }
+  .result-tag { font-size: 12px; padding: 4px 9px; }
+}
+
+.team-chip.locked {
+  cursor: default;
+  gap: 12px;
+  padding: 10px 12px 10px 14px;
+}
+.team-chip.locked:hover { transform: none; }
+
+.team-chip.advanced {
+  background: linear-gradient(100deg, rgba(240, 185, 77, 0.2), rgba(240, 185, 77, 0.05) 70%), var(--bg-card);
+  border-color: var(--gold-line);
+  box-shadow: 0 6px 18px -10px rgba(240, 185, 77, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+.team-chip.advanced:hover { border-color: var(--gold); }
+.team-chip.advanced .team-logo { border-color: var(--gold-line); }
+.team-chip.advanced .team-name { color: var(--gold-bright); }
+
+.team-chip.out {
+  background: rgba(0, 0, 0, 0.22);
+  border-color: var(--border-soft);
+  box-shadow: none;
+}
+.team-chip.out:hover { border-color: var(--border-soft); box-shadow: none; }
+.team-chip.out .team-logo { filter: grayscale(0.85) brightness(0.8); }
+.team-chip.out .team-name {
+  color: var(--text-dim);
+  text-decoration: line-through;
+  text-decoration-color: rgba(168, 150, 134, 0.45);
+  text-decoration-thickness: 1px;
+}
+
+.result-tag {
+  flex-shrink: 0;
+  font-family: "Agency", "Inter", system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+.team-chip.advanced .result-tag {
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  color: #241a06;
+  box-shadow: 0 0 10px rgba(240, 185, 77, 0.35);
+}
+.team-chip.out .result-tag {
+  border: 1px solid var(--ash-line);
+  color: var(--ash);
+}
+
+@media (max-width: 1500px) and (min-width: 1101px) {
+  .team-chip.locked { gap: 10px; padding: 8px 10px; }
+  .team-chip.locked .team-logo { width: 44px; height: 44px; }
+  .team-chip.locked .team-name { font-size: 19px; }
+  .result-tag { font-size: 11px; padding: 4px 8px; }
+}
+
+.progress-footer.locked .progress-track,
+.progress-footer.locked .progress-pct { display: none; }
+.progress-footer.locked .progress-text { flex: 1; white-space: normal; }
+@media (max-width: 640px) {
+  .progress-footer.locked .footer-share-btn { flex-basis: 100%; }
+}
+
 /* ---------- Footer progress bar ---------- */
 .progress-footer {
   position: fixed;

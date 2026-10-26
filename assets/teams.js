@@ -3,6 +3,16 @@
 
 const ADVANCE_COUNT = 2;
 
+// Kết quả chung cuộc vòng bảng (teamId theo thứ tự hạng 1 → 4).
+// Khi RESULTS_LOCKED = true, trang khóa kéo thả và hiển thị bảng xếp hạng này.
+const RESULTS_LOCKED = true;
+const FINAL_STANDINGS = {
+  A: ["A3", "A2", "A1", "A4"], // HGM, 6677, VAR, CCU
+  B: ["B2", "B4", "B3", "B1"], // GES, GOD, NF, VG
+  C: ["C1", "C4", "C2", "C3"], // EVO, GO, GS, JAV
+  D: ["D1", "D4", "D2", "D3"], // NN, RL, LW, RLF
+};
+
 const GROUPS = [
   {
     id: "A",

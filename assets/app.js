@@ -66,6 +66,11 @@
     return teamsOf(groupId).filter((t) => placed.indexOf(t.id) === -1);
   }
 
+  // Ranking shown in the cards: the official result once locked, otherwise the user's picks.
+  function rankingFor(groupId) {
+    return RESULTS_LOCKED ? FINAL_STANDINGS[groupId] : state.picks[groupId];
+  }
+
   // ---------- Chip rendering ----------
   function makeChip(team) {
     const li = document.createElement("li");
@@ -73,6 +78,17 @@
     li.dataset.teamId = team.id;
     const logoClass = team.lightBg ? "team-logo light-bg" : "team-logo";
     li.innerHTML = `<span class="${logoClass}"><img src="${team.logo}" alt="${team.name}" loading="lazy" /></span><span class="team-name">${team.name}</span>`;
+    return li;
+  }
+
+  function makeResultChip(team, rankIndex) {
+    const li = makeChip(team);
+    const advanced = rankIndex < ADVANCE_COUNT;
+    li.classList.add("locked", advanced ? "advanced" : "out");
+    li.insertAdjacentHTML(
+      "beforeend",
+      `<span class="result-tag">${advanced ? "Vào Playoffs" : "Dừng Bước"}</span>`
+    );
     return li;
   }
 
@@ -108,11 +124,23 @@
           ${eliminatedRows.join("")}
         </div>
       </div>
-      <div class="pool-section">
+      ${
+        RESULTS_LOCKED
+          ? ""
+          : `<div class="pool-section">
         <div class="section-label">CHƯA XẾP HẠNG</div>
         <ul class="pool-list" id="pool-${group.id}"></ul>
-      </div>
+      </div>`
+      }
     `;
+
+    if (RESULTS_LOCKED) {
+      card.classList.add("final");
+      FINAL_STANDINGS[group.id].forEach((teamId, idx) => {
+        card.querySelector(`#slot-${group.id}-${idx}`).appendChild(makeResultChip(teamById(group.id, teamId), idx));
+      });
+      return card;
+    }
 
     const poolEl = card.querySelector(`#pool-${group.id}`);
     poolTeamsFor(group.id).forEach((team) => poolEl.appendChild(makeChip(team)));
@@ -144,7 +172,10 @@
     const tagEl = document.getElementById(`tag-${groupId}`);
     const placed = state.picks[groupId].filter(Boolean);
     tagEl.className = "group-status-tag";
-    if (placed.length === SLOTS) {
+    if (RESULTS_LOCKED) {
+      tagEl.textContent = "🔒 Chung Cuộc";
+      tagEl.classList.add("complete");
+    } else if (placed.length === SLOTS) {
       tagEl.textContent = "Đã Xếp Hạng";
       tagEl.classList.add("complete");
     } else {
@@ -153,6 +184,12 @@
   }
 
   function updateFooterProgress() {
+    if (RESULTS_LOCKED) {
+      document.querySelector(".progress-footer").classList.add("done", "locked");
+      document.getElementById("progress-text").textContent = "🔒 Vòng Bảng đã kết thúc — Kết quả chung cuộc";
+      document.getElementById("share-btn").disabled = false;
+      return;
+    }
     const filled = GROUPS.reduce((sum, g) => sum + state.picks[g.id].filter(Boolean).length, 0);
     const pct = Math.round((filled / TOTAL_SLOTS) * 100);
     const footer = document.querySelector(".progress-footer");
@@ -212,7 +249,7 @@
     const grid = document.getElementById("groups-grid");
     grid.innerHTML = "";
     GROUPS.forEach((group) => grid.appendChild(buildGroupCard(group)));
-    wireSortables();
+    if (!RESULTS_LOCKED) wireSortables();
     GROUPS.forEach((group) => updateGroupTag(group.id));
     updateFooterProgress();
   }
@@ -245,7 +282,7 @@
   function buildShareCard() {
     shareGroupsEl.innerHTML = "";
     GROUPS.forEach((group) => {
-      const picks = state.picks[group.id];
+      const picks = rankingFor(group.id);
       const box = document.createElement("div");
       box.className = "share-group";
       const rowsHtml = picks
@@ -283,7 +320,7 @@
     html2canvas(card, { backgroundColor: null, scale: 2 })
       .then((canvas) => {
         const link = document.createElement("a");
-        link.download = "hoa-luan-du-doan-vong-bang.png";
+        link.download = btn.dataset.filename || "hoa-luan-du-doan-vong-bang.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
       })
@@ -303,6 +340,21 @@
     }
   });
 
+  // ---------- Locked (final results) chrome ----------
+  function applyLockedChrome() {
+    document.body.classList.add("results-locked");
+    document.getElementById("reset-btn").remove();
+    document.querySelector(".page-title").textContent = "Kết Quả Vòng Bảng";
+    document.querySelector(".mode-hint").innerHTML =
+      `Vòng Bảng đã khép lại — dưới đây là <strong>bảng xếp hạng chung cuộc</strong> của 4 bảng đấu.
+      Khung <span class="hint-dot advance"></span><strong>vàng (hạng 1–2)</strong> là 2 đội giành vé vào Playoffs, khung <span class="hint-dot eliminated"></span><strong>xám (hạng 3–4)</strong> là 2 đội dừng bước.`;
+    document.querySelector(".share-card-title").textContent = "Kết Quả Vòng Bảng";
+    document.getElementById("share-title").textContent = "Chia Sẻ Kết Quả Vòng Bảng";
+    document.getElementById("share-btn").title = "Tải ảnh bảng xếp hạng chung cuộc";
+    document.getElementById("download-share-btn").dataset.filename = "hoa-luan-ket-qua-vong-bang.png";
+  }
+
   // ---------- Init ----------
+  if (RESULTS_LOCKED) applyLockedChrome();
   renderAll();
 })();
