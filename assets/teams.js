@@ -13,6 +13,16 @@ const FINAL_STANDINGS = {
   D: ["D1", "D4", "D2", "D3"], // NN, RL, LW, RLF
 };
 
+// Cặp đấu Vòng 1 Playoffs (Nhánh Thắng), theo thứ tự từ trên xuống.
+// TẠM GHÉP chéo Nhất bảng gặp Nhì bảng khác — cập nhật lại khi có lịch chính thức.
+// Các vòng sau được suy ra tự động trong assets/playoffs.js.
+const PLAYOFF_ROUND1 = [
+  [FINAL_STANDINGS.A[0], FINAL_STANDINGS.B[1]], // HGM vs GOD
+  [FINAL_STANDINGS.C[0], FINAL_STANDINGS.D[1]], // EVO vs RL
+  [FINAL_STANDINGS.B[0], FINAL_STANDINGS.A[1]], // GES vs 6677
+  [FINAL_STANDINGS.D[0], FINAL_STANDINGS.C[1]], // NN vs GO
+];
+
 const GROUPS = [
   {
     id: "A",

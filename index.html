@@ -30,12 +30,21 @@
         </div>
         <button class="reset-btn" id="reset-btn" title="Xóa toàn bộ lựa chọn">Làm Lại</button>
       </div>
+      <nav class="stage-tabs" role="tablist" aria-label="Giai đoạn">
+        <button class="stage-tab" role="tab" data-tab="groups" id="tab-groups">
+          Vòng Bảng <span class="stage-tab-badge" id="tab-groups-badge"></span>
+        </button>
+        <button class="stage-tab" role="tab" data-tab="playoffs" id="tab-playoffs">
+          Playoffs <span class="stage-tab-badge open"><span class="live-dot"></span>Mở</span>
+        </button>
+      </nav>
     </div>
   </header>
 
   <main>
+    <section class="tab-panel" data-tab-panel="groups" role="tabpanel" aria-labelledby="tab-groups">
     <div class="hint-row">
-      <p class="mode-hint">
+      <p class="mode-hint" id="groups-hint">
         Kéo đội từ danh sách <strong>"Chưa Xếp Hạng"</strong> phía dưới lên các vị trí thứ hạng 1–4 phía trên để dự đoán kết quả vòng bảng.
         Khung <span class="hint-dot advance"></span><strong>vàng (hạng 1–2)</strong> là đội đi tiếp, khung <span class="hint-dot eliminated"></span><strong>xám (hạng 3–4)</strong> là đội bị loại.
       </p>
@@ -59,9 +68,37 @@
     <div class="groups-grid" id="groups-grid">
       <!-- Group cards injected by app.js -->
     </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="playoffs" role="tabpanel" aria-labelledby="tab-playoffs" hidden>
+      <div class="hint-row">
+        <p class="mode-hint">
+          <strong>Hướng dẫn:</strong> Nhấp vào một đội để dự đoán đội thắng của trận đó — đội thắng sẽ tự đi tiếp sang vòng sau.
+          Ở <strong>Nhánh Thắng</strong>, đội thua sẽ <strong>tự động rơi xuống Nhánh Thua</strong>, bạn không cần chọn lại.
+          Đổi lựa chọn ở vòng trước thì các lựa chọn phía sau liên quan đến đội đó sẽ được xóa để bạn chọn lại.
+        </p>
+
+        <div class="scoring-note">
+          <div class="scoring-note-title"><span class="scoring-note-icon">⚡</span>Cách Tính Điểm</div>
+          <div class="scoring-rows">
+            <div class="scoring-row">
+              <span class="scoring-badge">+10→50</span>
+              <span class="scoring-desc">Mỗi trận đoán đúng đội thắng nhận <strong>điểm theo vòng</strong> (ghi ở đầu mỗi cột)</span>
+            </div>
+          </div>
+          <div class="scoring-note-max"><span>Tối đa Playoffs</span><strong id="playoffs-max">280đ</strong></div>
+        </div>
+      </div>
+
+      <div class="bracket-scroll">
+        <div class="bracket" id="bracket">
+          <!-- Bracket injected by playoffs.js -->
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="progress-footer">
+  <footer class="progress-footer" data-tab-panel="groups">
     <div class="progress-footer-inner">
       <span class="progress-text" id="progress-text">0 / 16 lựa chọn đã hoàn thành</span>
       <div class="progress-track">
@@ -69,6 +106,17 @@
       </div>
       <span class="progress-pct" id="progress-pct">0%</span>
       <button class="share-btn footer-share-btn" id="share-btn" disabled title="Xếp đủ 16/16 đội để chia sẻ kết quả">📤 Chia Sẻ Kết Quả</button>
+    </div>
+  </footer>
+
+  <footer class="progress-footer" data-tab-panel="playoffs" id="playoffs-footer" hidden>
+    <div class="progress-footer-inner">
+      <span class="progress-text" id="pf-progress-text">0 / 14 lựa chọn đã hoàn thành</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="pf-progress-fill" style="width:0%"></div>
+      </div>
+      <span class="progress-pct" id="pf-progress-pct">0%</span>
+      <button class="share-btn footer-share-btn" id="pf-share-btn" disabled title="Chọn đủ 14/14 trận để chia sẻ">📤 Chia Sẻ Lựa Chọn</button>
     </div>
   </footer>
 
@@ -133,7 +181,7 @@
     <div class="modal-box share-modal-box" role="dialog" aria-modal="true" aria-labelledby="share-title">
       <button class="modal-close" id="share-close" aria-label="Đóng">&times;</button>
       <h2 class="modal-title" id="share-title">Chia Sẻ Kết Quả</h2>
-      <p class="modal-intro">Ảnh tổng hợp đầy đủ 4 bảng — tải về để chia sẻ, không lo chụp màn hình bị thiếu.</p>
+      <p class="modal-intro" id="share-intro">Ảnh tổng hợp đầy đủ 4 bảng — tải về để chia sẻ, không lo chụp màn hình bị thiếu.</p>
 
       <div class="share-card-scroll">
         <div class="share-card" id="share-card">
@@ -159,5 +207,6 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
   <script src="assets/teams.js"></script>
   <script src="assets/app.js"></script>
+  <script src="assets/playoffs.js"></script>
 </body>
 </html>

@@ -260,7 +260,9 @@
   }
 
   // ---------- Reset ----------
+  // The hero reset button is shared between tabs; playoffs.js handles its own tab.
   document.getElementById("reset-btn").addEventListener("click", () => {
+    if (document.body.dataset.tab !== "groups" || RESULTS_LOCKED) return;
     if (!confirm("Xóa toàn bộ dự đoán của bạn?")) return;
     GROUPS.forEach((g) => {
       state.picks[g.id] = new Array(SLOTS).fill(null);
@@ -285,7 +287,6 @@
   const shareGroupsEl = document.getElementById("share-groups");
 
   function buildShareCard() {
-    shareGroupsEl.innerHTML = "";
     GROUPS.forEach((group) => {
       const picks = rankingFor(group.id);
       const box = document.createElement("div");
@@ -305,13 +306,28 @@
     });
   }
 
-  const openShare = () => {
-    buildShareCard();
+  // Shared by both tabs: each fills the card body with its own content.
+  function openShareModal({ modalTitle, intro, cardTitle, filename, fill }) {
+    document.getElementById("share-title").textContent = modalTitle;
+    document.getElementById("share-intro").textContent = intro;
+    document.querySelector(".share-card-title").textContent = cardTitle;
+    document.getElementById("download-share-btn").dataset.filename = filename;
+    shareGroupsEl.className = "share-groups";
+    shareGroupsEl.innerHTML = "";
+    fill(shareGroupsEl);
     shareBackdrop.classList.remove("hidden");
-  };
+  }
   const closeShare = () => shareBackdrop.classList.add("hidden");
 
-  document.getElementById("share-btn").addEventListener("click", openShare);
+  document.getElementById("share-btn").addEventListener("click", () =>
+    openShareModal({
+      modalTitle: RESULTS_LOCKED ? "Chia Sẻ Kết Quả Vòng Bảng" : "Chia Sẻ Kết Quả",
+      intro: "Ảnh tổng hợp đầy đủ 4 bảng — tải về để chia sẻ, không lo chụp màn hình bị thiếu.",
+      cardTitle: RESULTS_LOCKED ? "Kết Quả Vòng Bảng" : "Lựa Chọn Của Tôi",
+      filename: RESULTS_LOCKED ? "hoa-luan-ket-qua-vong-bang.png" : "hoa-luan-du-doan-vong-bang.png",
+      fill: buildShareCard,
+    })
+  );
   document.getElementById("share-close").addEventListener("click", closeShare);
   shareBackdrop.addEventListener("click", (e) => {
     if (e.target === shareBackdrop) closeShare();
@@ -325,7 +341,7 @@
     html2canvas(card, { backgroundColor: null, scale: 2 })
       .then((canvas) => {
         const link = document.createElement("a");
-        link.download = btn.dataset.filename || "hoa-luan-du-doan-vong-bang.png";
+        link.download = btn.dataset.filename;
         link.href = canvas.toDataURL("image/png");
         link.click();
       })
@@ -348,18 +364,45 @@
   // ---------- Locked (final results) chrome ----------
   function applyLockedChrome() {
     document.body.classList.add("results-locked");
-    document.getElementById("reset-btn").remove();
-    document.querySelector(".page-title").textContent = "Kết Quả Vòng Bảng";
-    document.querySelector(".mode-hint").innerHTML =
+    document.getElementById("groups-hint").innerHTML =
       `Vòng Bảng đã khép lại — dưới đây là <strong>bảng xếp hạng chung cuộc</strong> của 4 bảng đấu.
       Khung <span class="hint-dot advance"></span><strong>vàng (hạng 1–2)</strong> là 2 đội giành vé vào Playoffs, khung <span class="hint-dot eliminated"></span><strong>xám (hạng 3–4)</strong> là 2 đội dừng bước.`;
-    document.querySelector(".share-card-title").textContent = "Kết Quả Vòng Bảng";
-    document.getElementById("share-title").textContent = "Chia Sẻ Kết Quả Vòng Bảng";
     document.getElementById("share-btn").title = "Tải ảnh bảng xếp hạng chung cuộc";
-    document.getElementById("download-share-btn").dataset.filename = "hoa-luan-ket-qua-vong-bang.png";
+    const badge = document.getElementById("tab-groups-badge");
+    badge.textContent = "🔒 Đã Khóa";
+    badge.classList.add("locked");
   }
+
+  // ---------- Stage tabs ----------
+  const TABS = ["groups", "playoffs"];
+  const DEFAULT_TAB = "playoffs";
+
+  function setTab(tab) {
+    document.body.dataset.tab = tab;
+    document.querySelectorAll("[data-tab-panel]").forEach((el) => {
+      el.hidden = el.dataset.tabPanel !== tab;
+    });
+    document.querySelectorAll(".stage-tab").forEach((btn) => {
+      const active = btn.dataset.tab === tab;
+      btn.classList.toggle("active", active);
+      btn.setAttribute("aria-selected", String(active));
+    });
+    document.querySelector(".page-title").textContent =
+      tab === "groups" && RESULTS_LOCKED ? "Kết Quả Vòng Bảng" : "Lựa Chọn Của Tôi";
+    document.getElementById("reset-btn").hidden = tab === "groups" && RESULTS_LOCKED;
+    history.replaceState(null, "", `#${tab}`);
+    document.dispatchEvent(new CustomEvent("hl:tabchange", { detail: { tab } }));
+  }
+
+  document.querySelectorAll(".stage-tab").forEach((btn) => {
+    btn.addEventListener("click", () => setTab(btn.dataset.tab));
+  });
+
+  window.HoaLuan = { openShareModal };
 
   // ---------- Init ----------
   if (RESULTS_LOCKED) applyLockedChrome();
   renderAll();
+  const hashTab = location.hash.slice(1);
+  setTab(TABS.includes(hashTab) ? hashTab : DEFAULT_TAB);
 })();

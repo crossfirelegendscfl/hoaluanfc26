@@ -1135,3 +1135,280 @@ main { padding: 28px 32px 40px; }
   .share-card { width: 400px; padding: 18px; }
   .share-groups { gap: 10px; }
 }
+
+[hidden] { display: none !important; }
+
+/* ---------- Stage tabs (Vòng Bảng / Playoffs) ---------- */
+.stage-tabs {
+  display: flex;
+  gap: 6px;
+  margin-top: 22px;
+  margin-bottom: -28px; /* sit on the hero's bottom border */
+}
+.stage-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(10, 8, 7, 0.55);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  color: var(--text-dim);
+  font-family: "Agency", "Inter", system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 12px 20px 13px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.stage-tab:hover { color: var(--text); }
+.stage-tab.active {
+  color: var(--gold-bright);
+  background: linear-gradient(180deg, rgba(36, 28, 22, 0.95), var(--bg));
+  border-color: var(--gold-line);
+}
+.stage-tab.active::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(90deg, var(--ember), var(--gold));
+}
+.stage-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.stage-tab-badge:empty { display: none; }
+.stage-tab-badge.open {
+  border-color: rgba(255, 106, 61, 0.55);
+  color: #ffb08f;
+  background: rgba(255, 106, 61, 0.1);
+}
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ember);
+  box-shadow: 0 0 8px var(--ember);
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+@keyframes live-pulse { 50% { opacity: 0.35; } }
+
+@media (max-width: 640px) {
+  .stage-tab { font-size: 17px; padding: 10px 14px 11px; gap: 7px; }
+  .stage-tab-badge { font-size: 10.5px; padding: 2px 7px; }
+}
+
+/* ---------- Playoffs bracket ---------- */
+.bracket-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+}
+.bracket {
+  position: relative;
+  min-width: 1080px;
+  max-width: 1400px;
+}
+.bracket-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.bracket-lines path {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1.5;
+}
+.bracket-lines path.done { stroke: var(--gold-line); }
+
+.bracket-section { position: relative; z-index: 1; }
+.bracket-section.lower {
+  margin-top: 34px;
+  padding: 18px 0 22px;
+  background: linear-gradient(180deg, rgba(141, 123, 108, 0.07), rgba(141, 123, 108, 0.02));
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+}
+.bracket-section-title {
+  font-family: "Agency", "Inter", system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin: 0 0 14px;
+}
+.bracket-section.upper .bracket-section-title { color: var(--gold-bright); }
+.bracket-section.lower .bracket-section-title {
+  color: var(--text-dim);
+  padding-left: calc((100% - 5 * 28px) / 6 + 28px + 2px);
+}
+
+.bracket-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  column-gap: 28px;
+}
+.bracket-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.round-head {
+  text-align: center;
+  background: linear-gradient(180deg, var(--bg-card-top), var(--bg-card));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 6px;
+  margin-bottom: 18px;
+}
+.round-name {
+  font-family: "Agency", "Inter", system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--text);
+}
+.round-points { font-size: 11.5px; color: var(--gold); margin-top: 2px; font-weight: 600; }
+.round-gf .round-head { border-color: var(--gold-line); }
+.round-gf .round-name { color: var(--gold-bright); }
+
+.round-matches {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 18px;
+}
+.upper .round-matches { min-height: 470px; }
+.lower .round-matches { min-height: 236px; }
+
+.match {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.7);
+}
+.match.decided { border-color: var(--gold-line); }
+
+.match-team {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 44px;
+  padding: 0 10px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+.match-team + .match-team { border-top: 1px solid var(--border-soft); }
+.match-team:not(:disabled):not(.picked):hover { background: rgba(240, 185, 77, 0.08); }
+.match-team:disabled { cursor: not-allowed; }
+.match-team:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+
+.match-logo {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  padding: 3px;
+  background: radial-gradient(circle at 35% 30%, var(--bg-card-top), #0d0a08 75%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.match-logo img { width: 100%; height: 100%; object-fit: contain; }
+.match-logo.light-bg { background: radial-gradient(circle at 35% 30%, #f3ead9, #d9cdb8 75%); }
+.match-logo.empty { border-style: dashed; background: transparent; }
+
+.match-name {
+  flex: 1;
+  min-width: 0;
+  font-family: "Agency", "Inter", system-ui, sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.match-star { color: var(--gold-bright); font-size: 15px; text-shadow: 0 0 8px rgba(240, 185, 77, 0.6); }
+
+.match-team.picked {
+  background: linear-gradient(100deg, rgba(240, 185, 77, 0.24), rgba(240, 185, 77, 0.06));
+  box-shadow: inset 3px 0 0 var(--gold);
+  cursor: default;
+}
+.match-team.picked .match-name { color: var(--gold-bright); }
+.match-team.lost { opacity: 0.45; }
+.match-team.lost:hover { opacity: 0.8; }
+.match-team.tbd { cursor: default; color: var(--text-dim); }
+.match-team.tbd .match-name { font-family: "Inter", system-ui, sans-serif; font-size: 12.5px; font-weight: 500; font-style: italic; letter-spacing: 0; }
+
+.round-gf .match { border-color: var(--gold-line); box-shadow: 0 0 26px -10px rgba(240, 185, 77, 0.45); }
+.champion-badge {
+  position: absolute;
+  top: calc(50% + 62px);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: "Agency", "Inter", system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dim);
+  line-height: 1.3;
+}
+.champion-badge strong { display: block; font-size: 20px; color: var(--gold-bright); }
+
+/* ---------- Playoffs share card ---------- */
+.share-groups.share-playoffs .share-champion { grid-column: 1 / -1; }
+.share-champion {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--gold);
+  background: linear-gradient(100deg, rgba(240, 185, 77, 0.22), rgba(240, 185, 77, 0.05));
+}
+.share-champion-logo {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #0b0906;
+  border: 1px solid var(--gold-line);
+  padding: 3px;
+}
+.share-champion-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); font-weight: 700; }
+.share-champion-name {
+  font-family: "Agency", "Inter", system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gold-bright);
+}
+.share-round-pts { float: right; font-size: 12px; color: var(--gold); }
+.share-vs { margin-left: auto; font-size: 11px; color: var(--text-dim); white-space: nowrap; }
