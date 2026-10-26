@@ -652,15 +652,33 @@ main { padding: 28px 32px 40px; }
 .group-card.final .rank-zone:last-child { margin-bottom: 0; }
 
 .results-locked .groups-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-@media (max-width: 1100px) { .results-locked .groups-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Result chips need ~300px cards, so drop to 2 columns earlier than the picks view. */
+@media (max-width: 1360px) { .results-locked .groups-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .results-locked .groups-grid { grid-template-columns: minmax(0, 1fr); } }
 .results-locked .slot-list { min-width: 0; }
-.team-chip.locked .team-name { min-width: 0; line-height: 1.05; }
+.team-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+.team-chip.locked .team-name {
+  flex: none;
+  max-width: 100%;
+  font-size: 21px;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1600px) and (min-width: 1361px) {
+  .team-chip.locked { gap: 10px; padding: 8px 12px 8px 10px; }
+  .team-chip.locked .team-logo { width: 46px; height: 46px; }
+  .team-chip.locked .team-name { font-size: 19px; }
+}
 @media (max-width: 640px) {
-  .team-chip.locked { gap: 10px; padding: 8px 10px; }
-  .team-chip.locked .team-logo { width: 44px; height: 44px; }
-  .team-chip.locked .team-name { font-size: 20px; }
-  .result-tag { font-size: 12px; padding: 4px 9px; }
+  .team-chip.locked { gap: 10px; padding: 8px 12px 8px 10px; }
+  .team-chip.locked .team-logo { width: 46px; height: 46px; }
 }
 
 .team-chip.locked {
@@ -694,31 +712,24 @@ main { padding: 28px 32px 40px; }
 }
 
 .result-tag {
-  flex-shrink: 0;
   font-family: "Agency", "Inter", system-ui, sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.7px;
+  line-height: 1;
   text-transform: uppercase;
   white-space: nowrap;
-  padding: 5px 10px;
+  padding: 4px 9px 3px;
   border-radius: 999px;
 }
 .team-chip.advanced .result-tag {
   background: linear-gradient(180deg, var(--gold-bright), var(--gold));
   color: #241a06;
-  box-shadow: 0 0 10px rgba(240, 185, 77, 0.35);
+  box-shadow: 0 0 10px rgba(240, 185, 77, 0.3);
 }
 .team-chip.out .result-tag {
   border: 1px solid var(--ash-line);
   color: var(--ash);
-}
-
-@media (max-width: 1500px) and (min-width: 1101px) {
-  .team-chip.locked { gap: 10px; padding: 8px 10px; }
-  .team-chip.locked .team-logo { width: 44px; height: 44px; }
-  .team-chip.locked .team-name { font-size: 19px; }
-  .result-tag { font-size: 11px; padding: 4px 8px; }
 }
 
 .progress-footer.locked .progress-track,

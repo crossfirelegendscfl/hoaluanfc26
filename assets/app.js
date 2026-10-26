@@ -85,10 +85,15 @@
     const li = makeChip(team);
     const advanced = rankIndex < ADVANCE_COUNT;
     li.classList.add("locked", advanced ? "advanced" : "out");
-    li.insertAdjacentHTML(
+    // Stack the name and its result tag so long names get the full chip width.
+    const info = document.createElement("span");
+    info.className = "team-info";
+    info.appendChild(li.querySelector(".team-name"));
+    info.insertAdjacentHTML(
       "beforeend",
-      `<span class="result-tag">${advanced ? "Vào Playoffs" : "Dừng Bước"}</span>`
+      `<span class="result-tag">${advanced ? "▲ Vào Playoffs" : "✕ Dừng Bước"}</span>`
     );
+    li.appendChild(info);
     return li;
   }
 
