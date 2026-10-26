@@ -14,13 +14,12 @@ const FINAL_STANDINGS = {
 };
 
 // Cặp đấu Vòng 1 Playoffs (Nhánh Thắng), theo thứ tự từ trên xuống.
-// TẠM GHÉP chéo Nhất bảng gặp Nhì bảng khác — cập nhật lại khi có lịch chính thức.
-// Các vòng sau được suy ra tự động trong assets/playoffs.js.
+// Theo lịch chính thức (M1–M4). Các vòng sau được suy ra tự động trong assets/playoffs.js.
 const PLAYOFF_ROUND1 = [
-  [FINAL_STANDINGS.A[0], FINAL_STANDINGS.B[1]], // HGM vs GOD
-  [FINAL_STANDINGS.C[0], FINAL_STANDINGS.D[1]], // EVO vs RL
-  [FINAL_STANDINGS.B[0], FINAL_STANDINGS.A[1]], // GES vs 6677
-  [FINAL_STANDINGS.D[0], FINAL_STANDINGS.C[1]], // NN vs GO
+  [FINAL_STANDINGS.A[0], FINAL_STANDINGS.B[1]], // M1: HGM (#1A) vs GOD (#2B)
+  [FINAL_STANDINGS.C[0], FINAL_STANDINGS.D[1]], // M2: EVO (#1C) vs RL (#2D)
+  [FINAL_STANDINGS.B[0], FINAL_STANDINGS.C[1]], // M3: GES (#1B) vs GO (#2C)
+  [FINAL_STANDINGS.D[0], FINAL_STANDINGS.A[1]], // M4: NN (#1D) vs 6677 (#2A)
 ];
 
 const GROUPS = [
@@ -39,7 +38,7 @@ const GROUPS = [
     name: "Bảng B",
     teams: [
       { id: "B1", name: "VN Glory", short: "VG", logo: "assets/img/teams/VG.png" },
-      { id: "B2", name: "Gà Esport", short: "GE", logo: "assets/img/teams/GE.png" },
+      { id: "B2", name: "Gà Esport", short: "GES", logo: "assets/img/teams/GE.png" },
       { id: "B3", name: "No Fear", short: "NF", logo: "assets/img/teams/NF.png" },
       { id: "B4", name: "God Empire", short: "GOD", logo: "assets/img/teams/GOD.png" },
     ],
